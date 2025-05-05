@@ -22,7 +22,7 @@ jobs:
 
       - name: Upload website files to S3
         run: |
-          aws s3 cp ./ s3://your-bucket-name/ --recursive \
+          aws s3 cp ./ s3://cloudtechinsight.link/ --recursive \
             --exclude "*" \
             --include "*.html" \
             --include "*.css" \
