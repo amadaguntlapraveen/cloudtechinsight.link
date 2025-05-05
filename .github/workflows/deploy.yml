@@ -3,7 +3,7 @@ name: Deploy to S3
 on:
   push:
     branches:
-      - main  # Change this if your default branch is different
+      - main  # Change this if your main branch is named differently
 
 jobs:
   deploy:
@@ -18,20 +18,13 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          region: us-east-1  # Change to your AWS region
+          aws-region: us-east-1  # ✅ Correct key name
 
-      - name: Set path-style access for S3 (fix for buckets with dots)
+      - name: Set path-style access (for bucket with dot)
         run: aws configure set default.s3.addressing_style path
 
-      - name: Upload website files to S3
+      - name: Sync website files to S3 (recommended)
         run: |
-          aws s3 cp ./ s3://cloudtechinsight.link/ --recursive \
-            --exclude "*" \
-            --include "*.html" \
-            --include "*.css" \
-            --include "*.js" \
-            --include "*.png" \
-            --include "*.jpg" \
-            --include "*.jpeg" \
-            --include "*.ico" \
-            --include "images/*"
+          aws s3 sync ./ s3://cloudtechinsight.link/ --delete \
+            --exclude ".git/*" \
+            --exclude ".github/*"
