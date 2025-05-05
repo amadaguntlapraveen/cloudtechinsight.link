@@ -3,7 +3,7 @@ name: Deploy to S3
 on:
   push:
     branches:
-      - main  # or your branch name
+      - main  # Change this if your default branch is different
 
 jobs:
   deploy:
@@ -18,7 +18,10 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          region: ap-south-1  # Change to your region
+          region: us-east-1  # Change to your AWS region
+
+      - name: Set path-style access for S3 (fix for buckets with dots)
+        run: aws configure set default.s3.addressing_style path
 
       - name: Upload website files to S3
         run: |
@@ -27,8 +30,8 @@ jobs:
             --include "*.html" \
             --include "*.css" \
             --include "*.js" \
-            --include "images/*" \
             --include "*.png" \
             --include "*.jpg" \
             --include "*.jpeg" \
-            --include "*.ico"
+            --include "*.ico" \
+            --include "images/*"
